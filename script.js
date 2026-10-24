@@ -1,75 +1,91 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP Protect - Trademark Portal</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+document.addEventListener("DOMContentLoaded", () => {
+    loadRecords();
+});
 
-    <header>
-        <div class="logo"><span>IP</span> PROTECT PORTAL</div>
-    </header>
+function getRecords() {
+    return JSON.parse(localStorage.getItem("trademarks")) || [];
+}
 
-    <main class="container">
-        <section class="hero">
-            <small>TRADEMARK INTELLIGENCE DATABASE</small>
-            <h1>Verification & Brand Protection</h1>
-            <p>আপনার ট্রেডমার্ক রেকর্ড সংরক্ষণ, সন্ধান এবং পরিচালনা করার সহজ পোর্টাল।</p>
-        </section>
+function saveRecords(records) {
+    localStorage.setItem("trademarks", JSON.stringify(records));
+}
 
-        <!-- Search Section -->
-        <section class="card">
-            <h2>স্মার্ট সার্চ (Search Record)</h2>
-            <input type="text" id="searchInput" onkeyup="searchRecords()" placeholder="রেজিস্ট্রেশন নম্বর, ব্র্যান্ড বা মালিকের নাম দিয়ে সার্চ করুন...">
-        </section>
+function addRecord(event) {
+    event.preventDefault();
 
-        <!-- Add Record Form -->
-        <section class="card">
-            <h2>নতুন ট্রেডমার্ক যোগ করুন (Add Record)</h2>
-            <form id="trademarkForm" onsubmit="addRecord(event)">
-                <div class="form-group">
-                    <input type="text" id="regNo" placeholder="Registration No (e.g. TM-101)" required>
-                    <input type="text" id="brandName" placeholder="Brand Name" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="owner" placeholder="Owner Name" required>
-                    <input type="text" id="classNo" placeholder="Class (e.g. Class 25)" required>
-                </div>
-                <div class="form-group">
-                    <select id="status">
-                        <option value="Registered">Registered</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Expired">Expired</option>
-                        <option value="Under Review">Under Review</option>
-                    </select>
-                    <button type="submit" class="btn">Add Record</button>
-                </div>
-            </form>
-        </section>
+    const regNo = document.getElementById("regNo").value.trim();
+    const brandName = document.getElementById("brandName").value.trim();
+    const owner = document.getElementById("owner").value.trim();
+    const classNo = document.getElementById("classNo").value.trim();
+    const status = document.getElementById("status").value;
 
-        <!-- Records Table -->
-        <section class="card">
-            <h2>ট্রেডমার্ক ডাটাবেস (Database)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Reg No.</th>
-                        <th>Brand Name</th>
-                        <th>Owner</th>
-                        <th>Class</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="recordTableBody">
-                    <!-- Dynamic Data Will Appear Here -->
-                </tbody>
-            </table>
-        </section>
-    </main>
+    const newRecord = { regNo, brandName, owner, classNo, status };
 
-    <script src="script.js"></script>
-</body>
-</html>
+    const records = getRecords();
+    records.push(newRecord);
+    saveRecords(records);
+
+    document.getElementById("trademarkForm").reset();
+    loadRecords();
+}
+
+function updateStats(records) {
+    document.getElementById("totalRecords").innerText = records.length;
+    
+    const uniqueClasses = new Set(records.map(r => r.classNo)).size;
+    document.getElementById("totalClasses").innerText = uniqueClasses;
+
+    const uniqueOwners = new Set(records.map(r => r.owner)).size;
+    document.getElementById("totalOwners").innerText = uniqueOwners;
+}
+
+function loadRecords() {
+    const records = getRecords();
+    updateStats(records);
+    renderTable(records);
+}
+
+function renderTable(records) {
+    const tableBody = document.getElementById("recordTableBody");
+    tableBody.innerHTML = "";
+
+    if (records.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: #94a3b8; padding: 25px;">No trademark records found. Add your first record above!</td></tr>`;
+        return;
+    }
+
+    records.forEach((record, index) => {
+        const statusClass = record.status.replace(/\s+/g, '-');
+        const row = `
+            <tr>
+                <td><strong>${record.regNo}</strong></td>
+                <td>${record.brandName}</td>
+                <td>${record.owner}</td>
+                <td>${record.classNo}</td>
+                <td><span class="badge-status status-${statusClass}">${record.status}</span></td>
+                <td><button class="delete-btn" onclick="deleteRecord(${index})">Delete</button></td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
+}
+
+function deleteRecord(index) {
+    const records = getRecords();
+    records.splice(index, 1);
+    saveRecords(records);
+    loadRecords();
+}
+
+function searchRecords() {
+    const filter = document.getElementById("searchInput").value.toLowerCase();
+    const records = getRecords();
+
+    const filteredRecords = records.filter(record => 
+        record.regNo.toLowerCase().includes(filter) ||
+        record.brandName.toLowerCase().includes(filter) ||
+        record.owner.toLowerCase().includes(filter)
+    );
+
+    renderTable(filteredRecords);
+}
