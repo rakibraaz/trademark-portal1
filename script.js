@@ -1,116 +1,75 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Protect - Trademark Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-body {
-    background-color: #0f172a;
-    color: #f8fafc;
-    padding-bottom: 50px;
-}
+    <header>
+        <div class="logo"><span>IP</span> PROTECT PORTAL</div>
+    </header>
 
-header {
-    background-color: #1e293b;
-    padding: 20px 10%;
-    border-bottom: 1px solid #334155;
-}
+    <main class="container">
+        <section class="hero">
+            <small>TRADEMARK INTELLIGENCE DATABASE</small>
+            <h1>Verification & Brand Protection</h1>
+            <p>আপনার ট্রেডমার্ক রেকর্ড সংরক্ষণ, সন্ধান এবং পরিচালনা করার সহজ পোর্টাল।</p>
+        </section>
 
-.logo {
-    font-size: 20px;
-    font-weight: bold;
-    color: #38bdf8;
-}
+        <!-- Search Section -->
+        <section class="card">
+            <h2>স্মার্ট সার্চ (Search Record)</h2>
+            <input type="text" id="searchInput" onkeyup="searchRecords()" placeholder="রেজিস্ট্রেশন নম্বর, ব্র্যান্ড বা মালিকের নাম দিয়ে সার্চ করুন...">
+        </section>
 
-.container {
-    max-width: 1000px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
+        <!-- Add Record Form -->
+        <section class="card">
+            <h2>নতুন ট্রেডমার্ক যোগ করুন (Add Record)</h2>
+            <form id="trademarkForm" onsubmit="addRecord(event)">
+                <div class="form-group">
+                    <input type="text" id="regNo" placeholder="Registration No (e.g. TM-101)" required>
+                    <input type="text" id="brandName" placeholder="Brand Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="owner" placeholder="Owner Name" required>
+                    <input type="text" id="classNo" placeholder="Class (e.g. Class 25)" required>
+                </div>
+                <div class="form-group">
+                    <select id="status">
+                        <option value="Registered">Registered</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Expired">Expired</option>
+                        <option value="Under Review">Under Review</option>
+                    </select>
+                    <button type="submit" class="btn">Add Record</button>
+                </div>
+            </form>
+        </section>
 
-.hero {
-    text-align: center;
-    margin-bottom: 30px;
-}
+        <!-- Records Table -->
+        <section class="card">
+            <h2>ট্রেডমার্ক ডাটাবেস (Database)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reg No.</th>
+                        <th>Brand Name</th>
+                        <th>Owner</th>
+                        <th>Class</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="recordTableBody">
+                    <!-- Dynamic Data Will Appear Here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
 
-.hero small {
-    color: #38bdf8;
-    letter-spacing: 2px;
-}
-
-.hero h1 {
-    font-size: 36px;
-    margin: 10px 0;
-}
-
-.card {
-    background: #1e293b;
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    border: 1px solid #334155;
-}
-
-.card h2 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #94a3b8;
-}
-
-input, select {
-    width: 100%;
-    padding: 12px;
-    background: #0f172a;
-    border: 1px solid #334155;
-    color: #fff;
-    border-radius: 6px;
-    outline: none;
-}
-
-.form-group {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.btn {
-    background: #0284c7;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 100%;
-}
-
-.btn:hover {
-    background: #0369a1;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #334155;
-}
-
-th {
-    background-color: #0f172a;
-    color: #38bdf8;
-}
-
-.delete-btn {
-    background: #ef4444;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
+    <script src="script.js"></script>
+</body>
+</html>
